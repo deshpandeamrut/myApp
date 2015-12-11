@@ -1,150 +1,99 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope,$http) {
-	console.log("dash ctrl");
-		$scope.todos = [{}];
-		data1 = {'action': 'get'};
-                
-                $http({
-        method: 'POST',
-        url: 'http://nammabagalkot.in/Angular/process.php',
-        data: {
-            'action': 'get'
-        },
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+.controller('DashCtrl', function($scope,$http,myService) {
+            $scope.todos = [{}];
+    myService.getTodos().then(function (data) {
+        console.log(data);
+        if (data.length == 0) {
+            console.log(data);
+            $scope.todos = data;
+            return;
         }
-    })
-            .success(function (data) {
-              data = data;
-                if (data.length == 0) {
-                    console.log(data);
-                    $scope.todos = data;
-                    return;
-                }
-                data.forEach(function (entry) {
+        data.forEach(function (entry) {
 //                    console.log(entry);
-                    if (entry.checked == "false") {
-                        entry.checked = false;
-                    } else {
-                        entry.checked = true;
-                    }
-                    console.log(data);
-                    $scope.todos = data;
+            if (entry.checked == "false") {
+                entry.checked = false;
+            } else {
+                entry.checked = true;
+            }
+            console.log(data);
+            $scope.todos = data;
+        });
 
-                });
-            });
-                
-  $scope.search ={
-			newtodotext:''
-		}
-    $scope.submittodo = function () {
-        var id = $scope.todos.length + 1;
-        var todo = {
+    });
+    $scope.search = {
+            'newtodotext':''
+        };
+    $scope.addTodo = function () {
+        var id = 0;
+        $scope.todos.forEach(function (entry) {
+            if (entry.id > id) {
+                id = entry.id;
+            }
+        })
+        id = id + 1;
+        
+        var time = new Date().toDateString();
+        var todonew = {
             'id': id,
             'title': $scope.search.newtodotext,
-            'checked': false
+            'checked': false,
+            'time': time
         };
+        $scope.todos.push(todonew);
+        $scope.todos.sort(function (a, b) {
+            if (b.id < a.id) {
+                return -1;
+            }
+            else if (a.id < b.id) {
+                return 1;
+            }
+            else {
+                return equal;
+            }
+        })
         $scope.search.newtodotext = "";
-        $http({
-            method: 'POST',
-            url: 'http://nammabagalkot.in/Angular/process.php',
-            data: {
-                'action': 'add',
-                'mydata': todo
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        })
-                .success(function (data) {
-					data = data;
-					console.log(data);
-                    data.forEach(function (entry) {
-//                    console.log(entry);
-                        if (entry.checked == "false") {
-                            entry.checked = false;
-                        } else {
-                            entry.checked = true;
-                        }
-
-                        $scope.todos = data;
-                    });
-                })
-				.error(function(error){
-					console.log("err"+err);
-				});
-				
+        myService.addTodo(todonew).then(function (data) {
+            console.log(data);
+        });
     }
-    $scope.change = function (todo) {
-		console.log(todo.checked);
-        if (todo.checked) {
-            console.log("Unticked");
-			// todo.checked = false;
-        } else {
-            console.log("Ticked");
-            // todo.checked = true;
-        }
-        $http({
-            method: 'POST',
-            url: 'http://nammabagalkot.in/Angular/process.php',
-            data: {
-                'action': 'markdone',
-                'mydata': todo
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        })
-                .success(function (data) {
-                    console.log(data);
-                    data.forEach(function (entry) {
-                        if (entry.checked == "false") {
-                            entry.checked = false;
-                        } else {
-                            entry.checked = true;
-                        }
-                        $scope.todos = data;
-                    });
-                });
+    $scope.markDone = function (todo) {
+        myService.markTodo(todo).then(function (data) {
+
+        });
+
     };
+    $scope.removeTodo = function (todo) {
+        myService.removeTodo(todo).then(function (data) {
+            $scope.todos.splice($scope.todos.indexOf(todo), 1);
+//      $scope.todos = $scope.todos.sort();
+        });
+    }
     $scope.editTodo = function (todo) {
         $scope.newtodotext = todo.title;
     }
-    $scope.deleteTodo = function (id) {
-        console.log(id);
-        $http({
-            method: 'POST',
-            url: 'http://nammabagalkot.in/Angular/process.php',
-            data: {
-                'action': 'delete',
-                'mydata': id
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+            $scope.doRefresh = function(){
+        myService.getTodos().then(function (data) {
+        console.log(data);
+        if (data.length == 0) {
+            console.log(data);
+            $scope.todos = data;
+            return;
+        }
+        data.forEach(function (entry) {
+//                    console.log(entry);
+            if (entry.checked == "false") {
+                entry.checked = false;
+            } else {
+                entry.checked = true;
             }
-        })
-                .success(function (data) {
-                    if (data.length == 0) {
-                        console.log(data);
-                        $scope.todos = data;
-                        return;
-                    }
-                    data.forEach(function (entry) {
-                        if (entry.checked == "false") {
-                            entry.checked = false;
-                        } else {
-                            entry.checked = true;
-                        }
-
-                        $scope.todos = data;
-
-                    });
-                });
-    }
-
-    $scope.doRefresh = function(){
-        location.reload();
+            console.log(data);
+            $scope.todos = data;
+        });
+        $scope.$broadcast('scroll.refreshComplete');
+//        $scope.$apply();
+    });
+    
     }
     $scope.onHold = function(){
         alert("long");

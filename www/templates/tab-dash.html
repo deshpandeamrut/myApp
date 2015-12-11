@@ -7,7 +7,7 @@
     </ion-refresher>
     <div>
         <div class="list formWrapper">
-            <form ng-submit="submittodo()">
+            <form ng-submit="addTodo()">
                 <!--<input type="text" ng-model="newtodotext" class="form-control">-->
                 <md-input-container class="todoformwrapper">
                     <label>Add new to do</label>
@@ -17,7 +17,7 @@
         </div>
         <div>
             <div  class="" ng-repeat="todo in todos track by $index">
-                <md-checkbox  class="box-one" ng-model="todo.checked" aria-label="Finished?" ng-show="!todo.checked"  ng-click="change(todo)">
+                <md-checkbox  class="box-one" ng-model="todo.checked" aria-label="Finished?" ng-show="!todo.checked"  ng-click="markDone(todo)">
                     {{todo.title}}  
                     <md-menu>
                     <!-- Trigger element is a md-button with an icon -->
@@ -26,7 +26,7 @@
                     </md-button>
                     <md-menu-content>
                         <md-menu-item><md-button ng-click="doSomething()"><i class="material-icons">edit</i>Edit</md-button></md-menu-item>
-                        <md-menu-item><md-button ng-click="deleteTodo(todo.id)"><i class="material-icons">delete</i>Delete</md-button></md-menu-item>
+                        <md-menu-item><md-button ng-click="removeTodo(todo)"><i class="material-icons">delete</i>Delete</md-button></md-menu-item>
                         <md-menu-item><md-button><i class="material-icons">info</i>{{todo.time}}</md-button></md-menu-item>
                     </md-menu-content>
                 </md-menu>
@@ -36,7 +36,7 @@
 
             <md-divider class="divider"></md-divider>
             <div  class="" ng-repeat="todo in todos track by $index">
-                <md-checkbox class="box-one todo linethrough" ng-model="todo.checked" aria-label="Finished?" ng-show="todo.checked"  ng-click="change(todo)">
+                <md-checkbox class="box-one todo linethrough" ng-model="todo.checked" aria-label="Finished?" ng-show="todo.checked"  ng-click="markDone(todo)">
                     {{todo.title}}   
                     
                     <md-menu>
@@ -46,7 +46,7 @@
                     </md-button>
                     <md-menu-content>
                         <md-menu-item><md-button ng-click="doSomething()"><i class="material-icons">edit</i>Edit</md-button></md-menu-item>
-                        <md-menu-item><md-button ng-click="deleteTodo(todo.id)"><i class="material-icons">delete</i>Delete</md-button></md-menu-item>
+                        <md-menu-item><md-button ng-click="removeTodo(todo)"><i class="material-icons">delete</i>Delete</md-button></md-menu-item>
                         <md-menu-item><md-button><i class="material-icons">info</i>{{todo.time}}</md-button></md-menu-item>
                     </md-menu-content>
                 </md-menu>

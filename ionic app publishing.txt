@@ -1,0 +1,20 @@
+1.BUILDING unsigned apk
+cordova build --release android
+- generate ap file in platforms/android/build/outputs/apk/appName.apk
+
+2. GENERATING KEY
+keytool -genkey -v -keystore todoapp-key.keystore -alias todoappkey -keyalg RSA -keysize 2048 -validity 10000
+key password:123456
+-generate todoapp-key.keystore in current dir
+
+3.Signing the app with the above key
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore todoapp-key.keystore platforms\android\build\outputs\apk\android-release-unsigned.apk todoappkey
+
+4. ZIPALIGN
+The zipalign tool can be found in 
+/path/to/Android/sdk/build-tools/VERSION/zipalign. 
+For example, on OS X with Android Studio installed, zipalign is in 
+~/Library/Android/sdk/build-tools/VERSION/zipalign:
+
+
+c:\AppMobile\myApp>"c:\android adt-bundle-windows-x86-20130729\sdk\build-tools\22.0.1\zipalign.exe"  -v 4 platforms\android\build\outputs\apk\android-release-unsigned.apk toDo.apk
